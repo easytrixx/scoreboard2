@@ -33,7 +33,7 @@ const Create = () => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
   function getLive(){
-    fetch("https://api.sofascore.com/api/v1/sport/football/events/live",{ mode: 'no-cors'})
+    fetch("https://api.sofascore.com/api/v1/sport/football/events/live")
         .then(response=> {
             return response.json();
         })
