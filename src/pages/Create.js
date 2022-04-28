@@ -27,6 +27,7 @@ const Create = () => {
   const [live, setLive] = React.useState([]);
   const items = []
   const[id, setId]=React.useState(0)
+  
   const [state, setState] = React.useState({
   });
   const handleChange = (event) => {
@@ -48,7 +49,7 @@ const Create = () => {
         id=key
       }
     }
-    history.push("/data/"+id)
+    window.open("/data/"+id)
   }
   function getMatches(){
     let newDate = new Date()
@@ -82,8 +83,10 @@ const Create = () => {
     />
         )}
 }*/
+const list=["UEFA Champions League", "UEFA Europa League", "UEFA Europa Conference League, Knockout stage", "UEFA Conference League","Eredivisie","Süper Lig", "Primeira Liga", "Premier League", "Bundesliga", "LaLiga", "Serie A", "Ligue 1", "Pro League", "UEFA Nations League", "World Cup", "World Cup Qual. UEFA", "World Cup Qual. CONMEBOL", "World Cup Qual. CAF", "World Cup Qual. AFC", "World Cup Qual. CONCACAF", "European Championship", "European Championship, Qualification","J.League","MLS"]
 for (const [index, value] of matches.entries()) {
-  if(value.status.description!="Ended"){
+  console.log(value.tournament.name)
+  if(value.status.description!="Ended" && list.includes(value.tournament.name)){
     items.push(
       <FormControlLabel
       control={<Checkbox unchecked={value.homeTeam.name+" - "+value.awayTeam.name} onChange={handleChange} name={value.id} />}

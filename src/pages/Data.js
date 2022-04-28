@@ -70,19 +70,41 @@ const useStyles = makeStyles((theme) => ({
   
 const Data = () => {
     const { id } = useParams()
-    const MINUTE_MS = 20000;
+    const MINUTE_MS = 12500;
     const classes = useStyles();
     const [nameHomeTeam, setHomeTeam] = useState("TEST");
     const [nameAwayTeam, setAwayTeam] = useState("TEST");
     const [scoreHome, setScoreHome] = useState(0);
     const [scoreAway, setScoreAway] = useState(0);
-    let goal = new Audio("/sound.mp3")
-    let red = new Audio("/sound.mp3")
+    let goal = new Audio("/BUT.mp3")
+    let red = new Audio("/ROUGE.mp3")
     const [logoHomeTeam, setLogoHomeTeam] = useState();
     const [logoAwayTeam, setLogoAwayTeam] = useState();
     let table=[]
     const [homeTeamColor,setHomeTeamColor]=useState("yellow");
     const [awayTeamColor, setAwayTeamColor]=useState("yellow")
+    const abreviation={
+      "RSC Anderlecht": "AND",
+      "KV Kortrijk": "KVK",
+      "KAS Eupen": "EUP",
+      "KV Oostende": "KVO",
+      "Royal Antwerp FC": "ANT",
+      "Cercle Brugge": "CER",
+      "Club Brugge": "CLU",
+      "KV Mechelen":"KVM",
+      "KAA Gent": "GNT",
+      "Oud-Heverlee Leuven": "OHL",
+      "RC Sporting Charleroi": "CHA",
+      "SV Zulte Waregem": "ZWA",
+      "RFC Seraing": "SER",
+      "KRC Genk": "GNK",
+      "Royale Union Saint-Gilloise": "USG",
+      "K. Beerschot V.A.": "BEE",
+      "Sint-Truidense VV.": "STV",
+      "Standard Liège": "STA",
+      "Manchester City": "MCI",
+      "Liverpool": "LIV"
+    }
     const [timer, setTimer]=useState(0);
     const start = () => {
       fetch("https://api.sofascore.com/api/v1/event/"+id+"/incidents")
@@ -94,14 +116,14 @@ const Data = () => {
             console.log(lastElement)
             console.log(table)
             if(lastElement!=null){
-              if(table.length==0 || lastElement.time!=users.incidents[1].time){
+                if(table.length==0 || lastElement.id!=users.incidents[1].id){
                 table.push(users.incidents[1])
                 console.log("HELLO")
                 if(users.incidents[1].incidentType=="goal"){
                   goal.play()
                   console.log("ET LE BUT")
                }
-               else if (users.incidents[1].incidentType=="card" && users.incidents.incidentClass=="red"){
+               else if (users.incidents[1].incidentType=="card" && users.incidents[1].incidentClass=="red"){
                  red.play()
                  console.log("ET LA ROUGE")
                 }
@@ -114,7 +136,7 @@ const Data = () => {
                 goal.play()
                 console.log("ET LE BUT")
              }
-             else if (users.incidents[1].incidentType=="card" && users.incidents.incidentClass=="red"){
+             else if (users.incidents[1].incidentType=="card" && users.incidents[1].incidentClass=="red"){
               red.play()
               console.log("ET LA ROUGE")
              }
@@ -162,21 +184,45 @@ const Data = () => {
                 setScoreHome(users.event.homeScore.current);
                 setScoreAway(users.event.awayScore.current);
             }
-            setHomeTeam(users.event.homeTeam.name);
-            setAwayTeam(users.event.awayTeam.name);
+            console.log(users.event.homeTeam.name)
+            console.log(users.event.awayTeam.name)
+            if(abreviation[users.event.homeTeam.name]!=null && abreviation[users.event.awayTeam.name]!=null){
+              setHomeTeam(abreviation[users.event.homeTeam.name]);
+              setAwayTeam(abreviation[users.event.awayTeam.name]);
+            }
+            else{
+              setHomeTeam(users.event.homeTeam.name);
+              setAwayTeam(users.event.awayTeam.name);
+            }
+            
             getLogoHomeTeam(users.event.homeTeam.id);
             getLogoAwayTeam(users.event.awayTeam.id);
             setMinuts(users.event)
+            console.log(users.event.homeTeam.teamColors.secondary)
             if(users.event.homeTeam.teamColors.primary=="#ffffff"){
+              
+              if(users.event.homeTeam.teamColors.secondary!="#ffffff"){
+                console.log(users.event.homeTeam.teamColors.secondary)
                 setHomeTeamColor(users.event.homeTeam.teamColors.secondary)
+              }
+              else{
+                setHomeTeamColor("#04006B")
+              }
             }
             else{
                 setHomeTeamColor(users.event.homeTeam.teamColors.primary)
             }
             if(users.event.awayTeam.teamColors.primary=="#ffffff"){
-                setAwayTeamColor(users.event.awayTeam.teamColors.secondary)
+                if(users.event.awayTeam.teamColors.secondary!="#ffffff"){
+                  setAwayTeamColor(users.event.awayTeam.teamColors.secondary)
+                }
+                else{
+                  setAwayTeamColor("#04006B")
+                }
+                
             }
             else{
+              console.log("AHAHAHAH")
                 setAwayTeamColor(users.event.awayTeam.teamColors.primary)
             }
         })
